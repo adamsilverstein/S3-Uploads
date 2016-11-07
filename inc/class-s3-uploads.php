@@ -83,6 +83,10 @@ class S3_Uploads {
 
 		$this->original_upload_dir = $dirs;
 
+		if ( apply_filters( 's3_bypass_file_remapping', false, $dirs ) ) {
+			return $dirs;
+		}
+
 		$dirs['path']    = str_replace( WP_CONTENT_DIR, 's3://' . $this->bucket, $dirs['path'] );
 		$dirs['basedir'] = str_replace( WP_CONTENT_DIR, 's3://' . $this->bucket, $dirs['basedir'] );
 
@@ -97,6 +101,8 @@ class S3_Uploads {
 				$dirs['baseurl'] = str_replace( 's3://' . $this->bucket, $this->get_s3_url(), $dirs['basedir'] );
 			}
 		}
+
+		$dirs = apply_filters( 's3_upload_dir_filter', $dirs );
 
 		return $dirs;
 	}
